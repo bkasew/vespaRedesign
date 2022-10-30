@@ -20,12 +20,12 @@
 ##
 golem::fill_desc(
   pkg_name = "vespaRedesign", # The Name of the package containing the App
-  pkg_title = "PKG_TITLE", # The Title of the package containing the App
-  pkg_description = "PKG_DESC.", # The Description of the package containing the App
-  author_first_name = "AUTHOR_FIRST", # Your First Name
-  author_last_name = "AUTHOR_LAST", # Your Last Name
-  author_email = "AUTHOR@MAIL.COM", # Your Email
-  repo_url = NULL # The URL of the GitHub Repo (optional)
+  pkg_title = "vespaRedesign", # The Title of the package containing the App
+  pkg_description = "Redesign VESPA using {bslib} in place of {flexdashboard}.", # The Description of the package containing the App
+  author_first_name = "Brandon", # Your First Name
+  author_last_name = "Whiteley", # Your Last Name
+  author_email = "bkasew@gmail.com", # Your Email
+  repo_url = "https://github.com/bkasew/VespaRedesign.git" # The URL of the GitHub Repo (optional)
 )
 
 ## Set {golem} options ----
@@ -43,6 +43,7 @@ usethis::use_news_md(open = FALSE)
 
 ## Use git ----
 usethis::use_git()
+usethis::use_github()
 
 ## Init Testing Infrastructure ----
 ## Create a template for tests
