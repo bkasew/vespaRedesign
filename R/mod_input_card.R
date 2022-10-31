@@ -10,6 +10,7 @@
 #' @importFrom shinyWidgets useSweetAlert pickerInput prettyRadioButtons actionBttn
 #' @importFrom htmltools css
 #' @importFrom bslib card card_body_fill
+#' @importFrom dplyr filter distinct pull
 mod_input_card_ui <- function(id){
   ns <- NS(id)
   useSweetAlert()
@@ -24,19 +25,19 @@ mod_input_card_ui <- function(id){
       prettyRadioButtons(
         inputId = ns("filter_by"),
         label = "Filter By",
-        choices = c("Variance", "Special Feature Code", "Segment"),
+        choices = c("Variance" = "Variance", "Special Feature Code" = "SFC", "Segment" = "Segment"),
         icon = icon("check"),
         bigger = FALSE
       ),
       pickerInput(
         inputId = ns("select_exec"),
         label = "Variance",
-        choices = c("a", "b", "c", "d")
+        choices = df %>% filter(Variance != "NONE") %>% distinct(Variance) %>% pull(Variance)
       ),
       pickerInput(
         inputId = ns("select_seller"),
         label = "Seller",
-        choices = c("a", "b", "c", "d")
+        choices = NULL
       ),
       pickerInput(
         inputId = ns("review_status"),
@@ -63,18 +64,18 @@ mod_input_card_ui <- function(id){
 #'
 #' @importFrom shiny observe bindEvent
 #' @importFrom shinyWidgets updatePickerInput sendSweetAlert
+#' @importFrom dplyr filter distinct pull
+#' @importFrom rlang parse_expr
 mod_input_card_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
     ## update exec choices based on selection
     observe({
-      exec_choices <- switch(
-        input$filter_by,
-        Variance = c("Variance A", "Variance B", "Variance C"),
-        `Special Feature Code` = c("SFC A", "SFC B", "SFC C"),
-        Segment = c("Segment A", "Segment B", "Segment C")
-      )
+      exec_choices <- df %>%
+        filter(!!parse_expr(input$filter_by) != "NONE") %>%
+        distinct(!!parse_expr(input$filter_by)) %>%
+        pull(!!parse_expr(input$filter_by))
       updatePickerInput(
         inputId = "select_exec",
         label = input$filter_by,
@@ -86,12 +87,10 @@ mod_input_card_server <- function(id){
 
     ## change seller choices based on selection
     observe({
-      seller_choices <- switch(
-        input$select_exec,
-        Variance = c("Variance A", "Variance B", "Variance C"),
-        `Special Feature Code` = c("SFC A", "SFC B", "SFC C"),
-        Segment = c("Segment A", "Segment B", "Segment C")
-      )
+      seller_choices <- df %>%
+        filter(!!parse_expr(input$filter_by) == input$select_exec) %>%
+        pull(Lender)
+
       updatePickerInput(
         inputId = "select_seller",
         choices = seller_choices,
